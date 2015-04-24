@@ -1,6 +1,6 @@
 
 var RELOAD_INTERVAL = 1000;
-var oldTotal = 0;
+var _oldTotal = 0;
 
 function sort_content(content) {
     var sorted = [];
@@ -24,27 +24,46 @@ function sort_content(content) {
 }
 
 function updatePage(content) {
+    var newTotal = Object.keys(content).length;
+    var diff = newTotal - _oldTotal;
+    var totalText = 'total: ' + newTotal;
+    totalText = (diff != 0) ? totalText + ' [' + diff + ' added]' : totalText;
+    $('#total').html(totalText);
+
+    _oldTotal = newTotal;
+
+    if (diff == 0) {
+        return;
+    }
+    
+
     $('#list').empty();
     sorted_content = sort_content(content);
     for (var idx in sorted_content) {
         var user = sorted_content[idx];
-        var item = '<li>' + user.name
+        var item = '<li>'
+            + '<img src="' + user.profile + '"> '
+            + user.name
             + ' <font color="red">[' + user.count + ']</font>'
             + '</li>';
         $('#list').append(item);
     }
-    var newTotal = sorted_content.length;
-    var diff = newTotal - oldTotal;
-    var totalText = 'total: ' + newTotal;
-    oldTotal = newTotal;
-    totalText = (diff != 0) ? totalText + ' [' + diff + ' new]' : totalText;
-    $('#total').html(totalText);
+}
+
+
+function statusUpdate(msg) {
+    $('#status').html(msg);
 }
 
 function reload() {
     setTimeout(reload, RELOAD_INTERVAL);
     $.get('/update', function(res) {
-        updatePage(res.content);
+        var err = res.error|| null;
+        if (err != null) {
+            statusUpdate('Failed to fetch');
+        } else {
+            updatePage(res.content);
+        }
     });
 }
 

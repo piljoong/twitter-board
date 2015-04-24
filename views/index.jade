@@ -4,7 +4,8 @@ html
         script(src='/js/jquery-1.11.2.min.js')
     body
         h1!= "Board"
+        h4#status!= "Normal"
         div#contents
-            h3#total!= "total: 0"
-            ul#list
+            h4#total!= "total: 0"
+            ul#list(style='list-style-type: none;')
         script(src='/js/board.js')

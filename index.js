@@ -18,14 +18,18 @@ app.get('/', function(req, res) {
 
 app.get('/update', function(req, res) {
     fetch(function(err, rows) {
-        res.send({ content: parseContent(rows) });
+        if (err) {
+            res.send({ error: err });
+        } else {
+            res.send({ content: parseContent(rows) });
+        }
     });
 });
 
 var fetch = function(callback) {
     pg.connect(PG_DSN, function(err, client, done) {
         if (err) {
-            callback('err');
+            callback(err);
             return;
         }
         client.query('select * from ' + TABLE_NAME, function(err, result) {
