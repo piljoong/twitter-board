@@ -1,5 +1,5 @@
 
-var RELOAD_INTERVAL = 1000;
+var RELOAD_INTERVAL = 5000;
 var _oldTotal = 0;
 
 function sort_content(content) {
